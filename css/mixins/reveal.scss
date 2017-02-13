@@ -1,0 +1,25 @@
+@import 'center';
+@import 'cover';
+
+@mixin reveal {
+    @include cover;
+    transition: opacity .5s, z-index 0s .5s;
+    opacity: 0;
+    z-index: -1;
+
+    &.OPEN {
+        transition: opacity .5s, z-index 0s;
+        opacity: 1;
+        z-index: 1;
+    }
+
+    li {
+        @include center;
+        transition: opacity .5s;
+        opacity: 0;
+
+        &.OPEN {
+            opacity: 1;
+        }
+    }
+}

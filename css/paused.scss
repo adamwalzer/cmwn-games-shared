@@ -1,0 +1,46 @@
+$text-color: #fff;
+$background-color: rgba(84, 194, 242, .7);
+
+@font-face {
+    font-family: 'CMWN';
+    src: url($media-server + 'Font%20Libraries/CMWN_Jade.eot'); /* IE9 Compat Modes */
+    src: url($media-server + 'Font%20Libraries/CMWN_Jade.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url($media-server + 'Font%20Libraries/CMWN_Jade.woff') format('woff'), /* Modern Browsers */
+    url($media-server + 'Font%20Libraries/CMWN_Jade.ttf') format('truetype'), /* Safari, Android, iOS */
+    url($media-server + 'Font%20Libraries/CMWN_Jade.svg#4012903f3d164196860fdbc893b3e032') format('svg'); /* Legacy iOS */
+    font-style: normal;
+    font-weight: 400;
+}
+
+@keyframes pause-pulse {
+    0% {transform: translate(-50%, -50%) scale3d(1, 1, 1);}
+    50% {transform: translate(-50%, -50%) scale3d(1.2, 1.2, 1);}
+    100% {transform: translate(-50%, -50%) scale3d(1, 1, 1);}
+}
+
+.pl-game.PAUSED:not(.DEMO) {
+    &::before {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2;
+        background-color: $background-color;
+        width: 100%;
+        height: 100%;
+        content: '';
+    }
+
+    &::after {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale3d(1, 1, 1);
+        animation: pause-pulse 3s infinite;
+        z-index: 2;
+        color: $text-color;
+        font-family: 'CMWN', 'Source Sans Pro', 'Helvetica Neue', Helvetica, sans-serif;
+        font-size: 72px;
+        content: 'PAUSED...';
+    }
+}

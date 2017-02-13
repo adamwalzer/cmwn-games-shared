@@ -1,0 +1,41 @@
+$white: #fff;
+
+// code from https://github.com/hudochenkov/sass-text-stroke
+@function text-stroke($size: 2, $color: $white, $correction: 0) {
+    $radius: $size - $correction;
+    $stroke: ();
+
+    @for $i from -$size through $size {
+        @for $k from -$size through $size {
+
+            $x: $k;
+            $y: $i;
+
+            @if $k > 0 {
+                $x: $k - .5;
+            } @elseif $k < 0 {
+                $x: $k + .5;
+            }
+
+            @if $i > 0 {
+                $y: $i - .5;
+            } @elseif $i < 0 {
+                $y: $i + .5;
+            }
+
+            @if ($x * $x + $y * $y <= $radius * $radius) {
+                $stroke: append($stroke, $i * 1px $k * 1px 0 $color, comma);
+            }
+        }
+    }
+
+    @return $stroke;
+}
+
+@mixin text-stroke($size: 2, $color: $white, $correction: 0, $size2: 0, $color2: $white, $correction2: 0) {
+    @if $size2 > 0 {
+        text-shadow: text-stroke($size, $color, $correction), text-stroke($size + $size2, $color2, $correction2);
+    } @else {
+        text-shadow: text-stroke($size, $color, $correction);
+    }
+}

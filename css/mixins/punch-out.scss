@@ -1,0 +1,23 @@
+$white: #fff;
+
+@mixin punch-out ($text-shadow: none, $background: none, $background-size: 100% 100%, $color: $white) {
+    position: relative;
+
+    &::before {
+        text-shadow: $text-shadow;
+        content: attr(content);
+    }
+
+    &::after {
+        @include cover;
+        background: $background;
+        background-size: $background-size;
+        text-shadow: none;
+        color: $white;
+        content: attr(content);
+        // scss-lint:disable VendorPrefix
+        -webkit-text-fill-color: $transparent;
+        -webkit-background-clip: text;
+        // scss-lint:enable VendorPrefix
+    }
+}

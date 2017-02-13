@@ -1,0 +1,25 @@
+$transparent-black: rgba(0, 0, 0, 0);
+
+/*
+ * general common scss for all games should be added to this file
+ * later we should refactor to bring in more common scss
+ */
+
+html {
+    // the autoprefixer doesn't add these automatically
+    // scss-lint:disable VenderPrefix
+    -moz-user-drag: none;
+    -webkit-user-drag: none;
+    user-drag: none;
+    -webkit-tap-highlight-color: $transparent-black;
+    // scss-lint:enable VenderPrefix
+    user-select: none;
+}
+
+img.hidden {
+    display: none;
+}
+
+.screen:not(.READY) > div {
+    display: none;
+}

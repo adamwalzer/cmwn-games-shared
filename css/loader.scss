@@ -1,0 +1,48 @@
+@import './mixins/import';
+
+$spinner-color: rgba(0, 0, 0, .5);
+
+#loader {
+    transition: opacity .5s;
+    opacity: 0;
+    z-index: -1;
+
+    .group {
+        @include center;
+
+        h2 {
+            margin-bottom: 30px;
+        }
+
+        > .spinner {
+            animation: pulse .5s infinite;
+            margin: auto;
+            width: 80px;
+            height: 80px;
+        }
+    }
+
+    .spinner {
+        position: relative;
+        border-radius: 50px;
+        background: $spinner-color;
+        width: 60%;
+        height: 60%;
+
+        > .spinner {
+            position: absolute;
+            top: 20%;
+            left: 20%;
+        }
+    }
+
+    &.OPEN {
+        opacity: 1;
+    }
+
+}
+
+.LOADING #loader {
+    opacity: 1;
+    z-index: 1;
+}

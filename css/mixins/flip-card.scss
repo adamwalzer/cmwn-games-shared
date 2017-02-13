@@ -1,0 +1,80 @@
+@mixin flip-card($direction: tb) {
+    position: relative;
+    cursor: pointer;
+
+    &.HIGHLIGHTED {
+        cursor: auto;
+    }
+
+    .side {
+        position: absolute;
+        top: 0;
+        left: 0;
+        transition: transform .5s;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        backface-visibility: hidden;
+    }
+
+    @if ($direction == tb) {
+        /* Top to Bottom */
+        .side.b {
+            transform: rotateX(180deg);
+        }
+
+        &.HIGHLIGHTED .side.a {
+            transform: rotateX(-180deg);
+        }
+
+        &.HIGHLIGHTED .side.b {
+            transform: rotateX(0deg);
+        }
+    }
+
+    @if ($direction == bt) {
+        /* Bottom to Top */
+
+        .side.b {
+            transform: rotateX(-180deg);
+        }
+
+        &.HIGHLIGHTED .side.a {
+            transform: rotateX(180deg);
+        }
+
+        &.HIGHLIGHTED .side.b {
+            transform: rotateX(0deg);
+        }
+    }
+
+    @if ($direction == lr) {
+        /* Left to Right (Default) */
+        .side.b {
+            transform: rotateY(-180deg);
+        }
+
+        &.HIGHLIGHTED .side.a {
+            transform: rotateY(180deg);
+        }
+
+        &.HIGHLIGHTED .side.b {
+            transform: rotateY(0deg);
+        }
+    }
+
+    @if ($direction == rl) {
+        /* Right to Left */
+        .side.b {
+            transform: rotateY(180deg);
+        }
+
+        &.HIGHLIGHTED .side.a {
+            transform: rotateY(-180deg);
+        }
+
+        &.HIGHLIGHTED .side.b {
+            transform: rotateY(0deg);
+        }
+    }
+}

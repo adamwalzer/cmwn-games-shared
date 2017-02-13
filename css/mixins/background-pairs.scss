@@ -1,0 +1,12 @@
+@mixin background-pairs($pairs) {
+    @for $i from 1 through length($pairs) {
+        $pair: nth($pairs, $i);
+        $class: nth($pair, 1);
+        $background: nth($pair, 2);
+
+        &.#{$class} {
+            @include background('#{$image}#{$background}');
+            background-size: cover;
+        }
+    }
+}

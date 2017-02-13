@@ -1,0 +1,9 @@
+@mixin screen-backgrounds($screens, $backgrounds) {
+    @for $i from 1 through length($screens) {
+        &.SCREEN-#{nth($screens, $i)} {
+            .background.#{nth($backgrounds, $i)} {
+                opacity: 1;
+            }
+        }
+    }
+}

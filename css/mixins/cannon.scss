@@ -1,0 +1,75 @@
+@import 'sprite';
+
+
+
+@mixin cannon {
+    @keyframes reload {
+        0% {
+            visibility: hidden;
+            opacity: 0;
+        }
+
+        67% {
+            visibility: hidden;
+            opacity: 0;
+        }
+
+        100% {
+            visibility: visible;
+            opacity: 1;
+        }
+    }
+
+    @keyframes fire {
+        25% {
+            transform: translateY(-380px) scale(.5);
+        }
+
+        50% {
+            transform: translateY(-300px) scale(.3);
+        }
+
+        60% {
+            transform: translateY(-300px) scale(.3);
+            opacity: 1;
+        }
+
+        100% {
+            transform: translateY(-300px) scale(.3);
+            opacity: 0;
+        }
+    }
+
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    &.FIRE {
+        pointer-events: none;
+
+        .LOADED {
+            /**
+             *    Normaly I would define the transition on the default rule but this way
+             *    the animation will not play when the 'LAUNCHED' flag is removed.
+             */
+            transition: transform .5s cubic-bezier(0, 0, .2, 1);
+            animation: fire 2.2s;
+        }
+    }
+
+    &.RELOAD {
+        .LOADED {
+            animation: reload .5s;
+        }
+    }
+
+    .ammo {
+        display: inline;
+        position: absolute;
+        pointer-events: none;
+    }
+}
