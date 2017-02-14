@@ -2,6 +2,15 @@ import Selectable from 'shared/components/selectable/0.1';
 import classNames from 'classnames';
 
 class MatchGame extends Selectable {
+    start() {
+        super.start();
+        this.bootstrap();
+
+        this.setState({
+            matched: [],
+        });
+    }
+
     selectHelper(e, classes) {
         var dataRef;
         var activeDataRef;
@@ -19,12 +28,18 @@ class MatchGame extends Selectable {
         matched = this.state.matched || [];
 
         if (matched.indexOf(message) !== -1) return;
-        if (typeof this.props.onSelect === 'function') this.props.onSelect();
+        this.props.onSelect.call(this);
 
         if (this.state.message) {
             if (message === this.state.message && dataRef !== this.state.activeDataRef) {
-                if (typeof this.props.onMatch === 'function') this.props.onMatch(message);
+                this.props.onMatch.call(this, message);
                 matched.push(message);
+                this.updateScreenData({
+                    key: this.props.matchTarget,
+                    data: {
+                        message,
+                    }
+                });
             } else {
                 setTimeout(function (oldDataRef) {
                     delete classes[dataRef];
@@ -60,7 +75,10 @@ class MatchGame extends Selectable {
 }
 
 MatchGame.defaultProps = _.merge(Selectable.defaultProps, {
-    selectClass: 'HIGHLIGHTED'
+    matchTarget: 'match-game',
+    selectClass: 'HIGHLIGHTED',
+    onMatch: _.noop,
+    onSelect: _.noop,
 });
 
 export default MatchGame;
