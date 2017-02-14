@@ -76,7 +76,7 @@ body.iOS:not(.STARTED) {
 
         &::before {
             display: block;
-            background-image: url('../images/ios_start_ball.png');
+            background-image: url('media.changemyworldnow.com/games/shared/ios-start-ball.png');
             background-repeat: no-repeat;
             background-position: 70px 70px;
             background-size: 1250px;
@@ -106,7 +106,7 @@ body.iOS:not(.STARTED) {
     [pl-id=ball] {
         &::before {
             animation: none;
-            background-image: url('../images/ios_start_ball_anim.gif');
+            background-image: url('media.changemyworldnow.com/games/shared/ios-start-ball-anim.gif');
             background-position: center center;
             background-size: contain;
         }
@@ -136,7 +136,7 @@ body.iOS:not(.STARTED) {
 
         &::before {
             display: block;
-            background-image: url('../images/ios_start_ball.png');
+            background-image: url('media.changemyworldnow.com/games/shared/ios-start-ball.png');
             background-repeat: no-repeat;
             background-position: 70px 70px;
             background-size: 1250px;
@@ -166,7 +166,7 @@ body.iOS:not(.STARTED) {
     [pl-id=ball] {
         &::before {
             animation: none;
-            background-image: url('../images/ios_start_ball_anim.gif');
+            background-image: url('media.changemyworldnow.com/games/shared/ios-start-ball-anim.gif');
             background-position: center center;
             background-size: contain;
         }
