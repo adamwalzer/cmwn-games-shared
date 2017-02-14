@@ -149,8 +149,8 @@ class Selectable extends skoash.Component {
     }
 
     renderList() {
-        var list = this.props.list || this.state.list;
-        return list.map((li, key) => {
+        var list = this.props.list || this.state.list || [];
+        return _.map(list, (li, key) => {
             var dataRef = li.props['data-ref'] || key;
             var ref = li.ref || li.props.id || dataRef;
             var message = li.props.message || '' + key;
@@ -182,12 +182,6 @@ class Selectable extends skoash.Component {
 }
 
 Selectable.defaultProps = _.defaults({
-    list: [
-        <li></li>,
-        <li></li>,
-        <li></li>,
-        <li></li>
-    ],
     selectClass: 'SELECTED',
     completeListOnClick: true,
     selectRespond: _.noop,
