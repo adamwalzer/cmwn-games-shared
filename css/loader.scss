@@ -3,6 +3,7 @@
 $spinner-color: rgba(0, 0, 0, .5);
 
 #loader {
+    @include cover;
     transition: opacity .5s;
     opacity: 0;
     z-index: -1;
@@ -15,34 +16,26 @@ $spinner-color: rgba(0, 0, 0, .5);
         }
 
         > .spinner {
+            @include size(80px);
             animation: pulse .5s infinite;
             margin: auto;
-            width: 80px;
-            height: 80px;
         }
     }
 
     .spinner {
+        @include size(60%);
         position: relative;
         border-radius: 50px;
         background: $spinner-color;
-        width: 60%;
-        height: 60%;
 
         > .spinner {
-            position: absolute;
-            top: 20%;
-            left: 20%;
+            @include position(absolute, 20% null null 20%);
         }
     }
-
-    &.OPEN {
-        opacity: 1;
-    }
-
 }
 
-.LOADING #loader {
+.LOADING #loader,
+.screen.OPEN:not(.READY) ~ #loader {
     opacity: 1;
-    z-index: 1;
+    z-index: 0;
 }
