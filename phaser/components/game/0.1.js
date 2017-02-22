@@ -1,16 +1,30 @@
 class Game {
     constructor(opts = {}) {
+        var update;
+
         opts.preload = (opts.preload || _.noop).bind(this);
         opts.create = (opts.create || _.noop).bind(this);
         opts.update = (opts.update || _.noop).bind(this);
 
+        update = (function () {
+            if (!this.shouldUpdate) {
+                setTimeout(() => {
+                    this.shouldUpdate = true;
+                    this.emitEvent({ ready: true });
+                }, 100);
+                return;
+            }
+
+            opts.update();
+        }).bind(this);
+
         opts = _.defaults(opts, {
             width: 960,
             height: 540,
-            renderer: Phaser.CANVAS,
+            renderer: Phaser.AUTO,
             parent: '',
             helpers: {},
-            state: { preload: opts.preload, create: opts.create, update: opts.update },
+            state: { preload: opts.preload, create: opts.create, update },
         });
 
         this.helpers = opts.helpers;
