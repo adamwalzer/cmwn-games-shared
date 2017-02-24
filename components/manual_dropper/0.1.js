@@ -82,19 +82,23 @@ class Dropper extends skoash.Component {
         this.setState({
             items
         }, () => {
-            let refs = _.filter(this.refs, (v, k) => !k.indexOf(ITEM));
-            this.invokeChildrenFunction('markCatchable');
-
-            this.updateScreenData({
-                key: this.props.refsTarget,
-                data: {
-                    refs,
-                    next: false,
-                }
-            });
-
-            this.props.onNext.call(this);
+            this.afterNext();
         });
+    }
+
+    afterNext() {
+        let refs = _.filter(this.refs, (v, k) => !k.indexOf(ITEM));
+        this.invokeChildrenFunction('markCatchable');
+
+        this.updateScreenData({
+            key: this.props.refsTarget,
+            data: {
+                refs,
+                next: false,
+            }
+        });
+
+        this.props.onNext.call(this);
     }
 
     caught(catchableRefKey) {

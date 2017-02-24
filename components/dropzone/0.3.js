@@ -132,8 +132,8 @@ class Dropzone extends skoash.Component {
     }
 
     dragRespond(draggable) {
-        if (this.audio.drag && !this.state.loadingData) {
-            this.audio.drag.play();
+        if (!this.state.loadingData) {
+            this.playMedia('drag');
         }
 
         if (typeof this.props.dragRespond === 'function') {
@@ -171,9 +171,7 @@ class Dropzone extends skoash.Component {
 
     outOfBounds(draggable) {
         // respond to out of bounds drop
-        if (this.audio.out) {
-            this.audio.out.play();
-        }
+        this.playMedia('out');
         this.incorrect(draggable);
     }
 
@@ -181,8 +179,8 @@ class Dropzone extends skoash.Component {
         // respond to correct drop
         draggable.markCorrect();
 
-        if (this.audio.correct && !this.state.loadingData) {
-            this.audio.correct.play();
+        if (!this.state.loadingData) {
+            this.playMedia('correct');
         }
 
         if (this.props.centerOnCorrect) {
@@ -219,9 +217,7 @@ class Dropzone extends skoash.Component {
     incorrect(draggable) {
     // respond to incorrect drop
         draggable.markIncorrect();
-        if (this.audio.incorrect) {
-            this.audio.incorrect.play();
-        }
+        this.playMedia('incorrect');
     }
 
     renderAssets() {
