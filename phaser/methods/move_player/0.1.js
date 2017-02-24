@@ -11,11 +11,11 @@ export default function (opts) {
     if (this.isHit) return;
     this.player.body.velocity.x = 0;
 
-    if (this.cursors.left.isDown || this.controller.left) {
+    if (this.controller.left) {
         //  Move to the left
         this.player.body.velocity.x = opts.leftSpeed;
         this.player.animations.play('left');
-    } else if (this.cursors.right.isDown || this.controller.right) {
+    } else if (this.controller.right) {
         //  Move to the right
         this.player.body.velocity.x = opts.rightSpeed;
         this.player.animations.play('right');
@@ -27,13 +27,15 @@ export default function (opts) {
 
     //  Allow the player to jump if they are touching the ground.
     if (this.player.canJump &&
-        (this.cursors.up.isDown || this.controller.up) &&
+        (this.controller.up) &&
         this.player.body.touching.down) {
         this.player.body.velocity.y = opts.upSpeed;
+        _.invoke(opts.jumpSound, 'play');
     }
 
     //  Allow the player to fall fast if they are not touching the ground.
-    if ((this.cursors.down.isDown || this.controller.down) && !this.player.body.touching.down) {
+    if (this.controller.down && !this.player.body.touching.down) {
         this.player.body.velocity.y = opts.downSpeed;
     }
 }
+

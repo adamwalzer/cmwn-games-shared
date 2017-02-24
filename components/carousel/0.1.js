@@ -105,8 +105,8 @@ class Carousel extends Selectable {
      * that the element is transitioned and not replaced.
      */
     renderList() {
-        var list = this.state.list || this.props.list;
-        return list.map((li, key) => {
+        var list = this.state.list || this.props.list || [];
+        return _.map(list, (li, key) => {
             var ref;
             var onTransitionEnd;
             ref = li.ref || li.props['data-ref'] || key;

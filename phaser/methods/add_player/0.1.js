@@ -1,3 +1,5 @@
+import scaleItem from 'shared/phaser/methods/scale_item/0.1';
+
 export default function (opts = {}) {
     opts = _.defaults(opts, {
         left: 32,
@@ -19,6 +21,7 @@ export default function (opts = {}) {
         rightFrameRate: 10,
         rightLoop: true,
         scale: [1, 1],
+        anchor: [.5, .5],
     });
 
     // The player and its settings
@@ -28,7 +31,8 @@ export default function (opts = {}) {
     this.game.physics.arcade.enable(this.player);
 
     //  Player physics properties. Give the little guy a slight bounce.
-    this.player.scale.setTo(...opts.scale);
+    this.player.anchor.setTo(...opts.anchor);
+    scaleItem(this.player, opts);
     this.player.body.bounce.x = opts.bounceX;
     this.player.body.bounce.y = opts.bounceY;
     this.player.body.gravity.x = opts.gravityX;
