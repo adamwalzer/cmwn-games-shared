@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 
-import Selectable from 'shared/components/selectable/0.1';
-import SelectableCanvas from 'shared/components/selectable_canvas/0.1';
+import SelectableCanvas from 'shared/components/selectable_canvas/0.2';
 
 var Item = function (component, context) {
     this.position = {
@@ -31,7 +30,7 @@ var Item = function (component, context) {
         this.context.drawImage(
             this.image,
             this.left,
-            this.component.props.backgroundTop * this.image.naturalHeight / 15,
+            this.component.props.backgroundRow * this.image.naturalHeight / 15,
             this.size.width,
             this.size.height,
             this.position.x,
@@ -59,13 +58,13 @@ var Item = function (component, context) {
         this.left = 0;
     };
 
-  // this.is = function (_type) {
-  //   return $(this.image).is(_type);
-  // };
+    // this.is = function (_type) {
+    //   return $(this.image).is(_type);
+    // };
 
-  // this.id = function () {
-  //   return this.$image.id();
-  // };
+    // this.id = function () {
+    //   return this.$image.id();
+    // };
 
     return this;
 };
@@ -84,7 +83,7 @@ class SelectableCanvasMove extends SelectableCanvas {
     }
 
     bootstrap() {
-        Selectable.prototype.bootstrap.call(this);
+        skoash.Selectable.prototype.bootstrap.call(this);
 
         this.buffer = document.createElement('canvas');
 
@@ -106,11 +105,10 @@ class SelectableCanvasMove extends SelectableCanvas {
     }
 
     setDimensions() {
-        this.offset = this.el.getBoundingClientRect();
-        this.refs.canvas.width = this.offset.width;
-        this.refs.canvas.height = this.offset.height;
-        this.buffer.width = this.offset.width;
-        this.buffer.height = this.offset.height;
+        this.refs.canvas.width = this.el.offsetWidth;
+        this.refs.canvas.height = this.el.offsetHeight;
+        this.buffer.width = this.el.offsetWidth;
+        this.buffer.height = this.el.offsetHeight;
     }
 
     componentDidUpdate() {
@@ -135,7 +133,7 @@ class SelectableCanvasMove extends SelectableCanvas {
             y = item.position.y + item.margin;
             height = item.size.height;
 
-            if (y + height < 0) item.position.y = this.offset.height * 1.1;
+            if (y + height < 0) item.position.y = this.el.offsetHeight * 1.1;
 
             item.render();
         });
@@ -187,7 +185,7 @@ class SelectableCanvasMove extends SelectableCanvas {
         this.bctx.drawImage(
             item.image,
             item.left,
-            item.component.props.backgroundTop * item.image.naturalHeight / 15,
+            item.component.props.backgroundRow * item.image.naturalHeight / 15,
             item.size.width,
             item.size.height,
             item.position.x,
