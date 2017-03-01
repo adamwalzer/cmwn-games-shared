@@ -17,9 +17,11 @@
         @include center;
         transition: opacity .5s;
         opacity: 0;
+        pointer-events: none;
 
         &.OPEN {
             opacity: 1;
+            pointer-events: auto;
         }
     }
 }

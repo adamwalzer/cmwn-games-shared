@@ -73,6 +73,10 @@
         &.prev-screen {
             transform: scale3d(1, 1, 1);
         }
+
+        &.close-reveal {
+            transition: opacity 1s;
+        }
     }
 
     h2 {
