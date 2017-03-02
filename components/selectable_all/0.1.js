@@ -140,6 +140,8 @@ SelectableAll.defaultProps = _.defaults({
     doCount: false,
     launchPause: 100,
     selectClass: 'SELECTED',
+    selectRespond: _.noop,
+    onSelect: _.noop,
 }, skoash.Component.defaultProps);
 
 export default SelectableAll;
