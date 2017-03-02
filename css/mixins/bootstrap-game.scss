@@ -1,4 +1,12 @@
-@mixin bootstrap-game {
+$default-font: "Source Sans Pro", "Helvetica Neue", Helvetica, sans-serif;
+
+@mixin bootstrap-game($font: null) {
+    @if ($font == null) {
+        $font: $default-font;
+    } @else {
+        $font: $font, $default-font;
+    }
+
     * {
         box-sizing: border-box;
     }
@@ -15,7 +23,7 @@
     }
 
     html {
-        font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, sans-serif;
+        font-family: $font;
         touch-action: manipulation;
     }
 
