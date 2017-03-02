@@ -193,12 +193,13 @@ class SelectableCanvasMove extends SelectableCanvas {
             item.backgroundSize.width,
             item.backgroundSize.height
         );
-        pixel = this.bctx.getImageData(e.pageX, e.pageY, 1, 1);
+
+        pixel = this.bctx.getImageData(e.pageX / this.props.scale, e.pageY / this.props.scale, 1, 1);
 
         this.bctx.fillStyle = 'blue';
         this.bctx.fillRect(e.pageX, e.pageY, 5, 5);
 
-    // opaque pixel
+        // opaque pixel
         return pixel.data[3] > 0;
     }
 
@@ -225,6 +226,7 @@ class SelectableCanvasMove extends SelectableCanvas {
 SelectableCanvasMove.defaultProps = _.defaults({
     items: [],
     onSelect: _.noop,
+    scale: 1,
 }, SelectableCanvas.defaultProps);
 
 export default SelectableCanvasMove;
