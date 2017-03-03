@@ -1,10 +1,6 @@
 import Selectable from 'shared/components/selectable/0.1';
 
 class SelectableScreen extends skoash.Screen {
-    constructor() {
-        super();
-    }
-
     selectRespond(message) {
         this.playMedia(message);
 
