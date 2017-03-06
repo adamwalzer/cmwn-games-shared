@@ -1,0 +1,11 @@
+.slider {
+
+    .content > * {
+        transition: opacity 1s;
+    }
+
+	.prev-slide,
+	.next-slide {
+		z-index: 1;
+	}
+}
