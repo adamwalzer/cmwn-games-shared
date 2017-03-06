@@ -133,8 +133,9 @@ class Dropzone extends skoash.Component {
     inBounds(dropped, dropzoneArray) {
         let correct = _.some(dropzoneArray, dropzoneRef => {
             if (
-                !dropzoneRef.props.answers ||
-                _.includes(dropzoneRef.props.answers, dropped.props.message)
+                (!dropzoneRef.props.answers ||
+                _.includes(dropzoneRef.props.answers, dropped.props.message)) &&
+                !(this.props.acceptOne && dropzoneRef.contains.length > 0)
             ) {
                 this.correct(dropped, dropzoneRef);
                 return true;
@@ -209,6 +210,7 @@ Dropzone.defaultProps = _.defaults({
     onCorrect: _.noop,
     onIncorrect: _.noop,
     onDrag: _.noop,
+    acceptOne: false,
 }, skoash.Component.defaultProps);
 
 export default Dropzone;
