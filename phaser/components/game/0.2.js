@@ -6,6 +6,7 @@ class Game {
             renderer: Phaser.AUTO,
             parent: '',
             helpers: {},
+            defaultState: 'default',
         });
 
         this.helpers = opts.helpers;
@@ -20,7 +21,7 @@ class Game {
             this.game.state.add(stateName, state);
         });
 
-        this.game.state.start('default');
+        this.game.state.start(opts.defaultState);
 
         this.attachEvents();
     }
@@ -35,7 +36,6 @@ class Game {
                     this.data = _.defaults(e.data.data, this.data);
                     break;
                 case 'state-update':
-                    console.log(e.data.data);
                     this.game.state.start(e.data.data || 'default');
                     break;
                 case 'pause':
