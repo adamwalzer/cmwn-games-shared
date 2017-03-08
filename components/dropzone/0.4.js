@@ -8,9 +8,11 @@ class Dropzone extends skoash.Component {
 
         super.start();
 
-        self.dropzoneCorners = _.map(self.props.dropzones, (value, key) =>
-            self.getCorners(ReactDOM.findDOMNode(self.refs[`dropzone-${key}`]))
-        );
+        setTimeout(() => {
+            self.dropzoneCorners = _.map(self.props.dropzones, (value, key) =>
+                self.getCorners(ReactDOM.findDOMNode(self.refs[`dropzone-${key}`]))
+            );
+        }, 500);
 
         if (self.loadData && typeof self.loadData === 'object') {
             _.forIn(self.loadData, (ref1, key1) => {
