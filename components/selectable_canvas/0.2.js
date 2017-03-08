@@ -28,8 +28,9 @@ class SelectableCanvas extends skoash.Selectable {
         this.items = [];
 
         _.forIn(this.refs, component => {
-            var img = ReactDOM.findDOMNode(component.refs.img);
+            var img;
             if (!component.refs) return;
+            img = ReactDOM.findDOMNode(component.refs.img);
             if (img) this.items.push(img);
         });
     }
