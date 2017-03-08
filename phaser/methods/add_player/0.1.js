@@ -46,14 +46,8 @@ export default function (opts = {}) {
     if (!opts.body) {
         opts.body = [this.player.body.width, this.player.body.height, 0, 0];
     }
-    // defer here to prevent this.player.scale from overriding body size
-    // we might want to find a better way to do this
-    setTimeout(() => {
-        this.player.body.width = Math.abs(opts.body[0] * opts.scale[0]);
-        this.player.body.height = Math.abs(opts.body[1] * opts.scale[1]);
-        this.player.body.offset.x = opts.body[2];
-        this.player.body.offset.y = opts.body[3];
-    }, 0);
+
+    this.player.body.setSize(...opts.body);
 
     if (opts.onWorldBounds) {
         this.player.body.onWorldBounds = new Phaser.Signal();

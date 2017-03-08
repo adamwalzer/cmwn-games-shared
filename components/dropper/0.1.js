@@ -35,7 +35,7 @@ class Dropper extends Draggable {
 
         this.setState({
             items,
-            classes,
+            classes: classes || {},
             itemCount: index + 1,
         }, () => {
             var timeoutFunction = i => {
