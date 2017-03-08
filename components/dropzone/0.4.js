@@ -129,6 +129,7 @@ class Dropzone extends skoash.Component {
             dropzoneRef.contains = contains;
         });
 
+        this.playMedia('drag');
         this.props.onDrag.call(this, dragging);
     }
 
