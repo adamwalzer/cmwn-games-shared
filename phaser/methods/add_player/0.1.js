@@ -31,8 +31,8 @@ export default function (opts = {}) {
     this.game.physics.arcade.enable(this.player);
 
     //  Player physics properties. Give the little guy a slight bounce.
+    this.player.scale.setTo(...opts.scale);
     this.player.anchor.setTo(...opts.anchor);
-    scaleItem(this.player, opts);
     this.player.body.bounce.x = opts.bounceX;
     this.player.body.bounce.y = opts.bounceY;
     this.player.body.gravity.x = opts.gravityX;
@@ -43,11 +43,9 @@ export default function (opts = {}) {
     this.player.body.checkCollision.right = opts.checkCollisionRight;
     this.player.body.checkCollision.left = opts.checkCollisionLeft;
 
-    if (!opts.body) {
-        opts.body = [this.player.body.width, this.player.body.height, 0, 0];
+    if (opts.body) {
+        this.player.body.setSize(...opts.body);
     }
-
-    this.player.body.setSize(...opts.body);
 
     if (opts.onWorldBounds) {
         this.player.body.onWorldBounds = new Phaser.Signal();

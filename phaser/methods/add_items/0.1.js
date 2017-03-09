@@ -60,11 +60,9 @@ export default function (groupOpts = {}, optsArray = []) {
             item.body.checkCollision.right = opts.checkCollisionRight;
             item.body.checkCollision.left = opts.checkCollisionLeft;
 
-            if (!opts.body) {
-                opts.body = [item.body.width, item.body.height, 0, 0];
+            if (opts.body) {
+                item.body.setSize(...opts.body);
             }
-
-            item.body.setSize(...opts.body);
         }
     });
 }
