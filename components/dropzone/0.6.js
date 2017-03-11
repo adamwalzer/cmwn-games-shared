@@ -116,18 +116,26 @@ class Dropzone extends skoash.Component {
     }
 
     onDrag(dragging) {
+        this.removeEl(dragging);
+        this.props.onDrag.call(this, dragging);
+    }
+
+    onReturn(returning) {
+        this.removeEl(returning);
+        this.props.onReturn.call(this, returning);
+    }
+
+    removeEl(el) {
         _.each(this.props.dropzones, (value, key) => {
             var index;
             var dropzoneRef;
             var contains;
             dropzoneRef = this.refs[`dropzone-${key}`];
             contains = dropzoneRef.contains || [];
-            index = contains.indexOf(dragging);
+            index = contains.indexOf(el);
             if (~index) contains.splice(index, 1);
             dropzoneRef.contains = contains;
         });
-
-        this.props.onDrag.call(this, dragging);
     }
 
     inBounds(dropped, dropzoneArray) {
@@ -179,6 +187,11 @@ class Dropzone extends skoash.Component {
         if (props.dragging && props.dragging !== this.props.dragging) {
             this.onDrag(props.dragging);
         }
+
+        if (props.returning && props.returning !== this.props.returning) {
+            this.onReturn(props.returning);
+        }
+
     }
 
     renderDropzones() {
@@ -210,6 +223,7 @@ Dropzone.defaultProps = _.defaults({
     onCorrect: _.noop,
     onIncorrect: _.noop,
     onDrag: _.noop,
+    onReturn: _.noop,
     acceptOne: false,
 }, skoash.Component.defaultProps);
 

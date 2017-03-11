@@ -90,7 +90,8 @@ class Draggable extends skoash.Component {
             path: this.props.draggableTarget,
             data: {
                 dragging: this,
-                dropped: null
+                dropped: null,
+                returning: null,
             },
         });
 
@@ -160,6 +161,15 @@ class Draggable extends skoash.Component {
             endX = this.state.startX;
             endY = this.state.startY;
             doReturn = true;
+
+            this.updateScreenData({
+                path: this.props.draggableTarget,
+                data: {
+                    dropping: null,
+                    dragging: null,
+                    returning: this,
+                },
+            });
         }
 
         this.setState({
@@ -193,7 +203,8 @@ class Draggable extends skoash.Component {
             path: this.props.draggableTarget,
             data: {
                 dragging: null,
-                dropped: this
+                dropped: this,
+                returning: null,
             },
         });
 

@@ -1,11 +1,23 @@
-.slider {
-
+@mixin slider {
     .content > * {
         transition: opacity 1s;
+
+        &.VISIBLE {
+            opacity: 1;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+
+        &.HIDDEN {
+            opacity: 0;
+            cursor: default;
+            pointer-events: none;
+        }
     }
 
-	.prev-slide,
-	.next-slide {
-		z-index: 1;
-	}
+    .prev-slide,
+    .next-slide {
+    z-index: 1;
+    }
 }
+
