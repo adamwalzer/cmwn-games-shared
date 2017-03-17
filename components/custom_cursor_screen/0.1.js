@@ -1,6 +1,6 @@
 class CustomCursorScreen extends skoash.Screen {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
             cursorLeft: 0,
@@ -23,6 +23,8 @@ class CustomCursorScreen extends skoash.Screen {
         window.addEventListener('touchstart', this.touchstart);
 
         window.addEventListener('resize', this.resize);
+
+        this.resize();
     }
 
     resize() {
