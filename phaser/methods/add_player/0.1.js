@@ -1,5 +1,3 @@
-import scaleItem from 'shared/phaser/methods/scale_item/0.1';
-
 export default function (opts = {}) {
     opts = _.defaults(opts, {
         left: 32,
