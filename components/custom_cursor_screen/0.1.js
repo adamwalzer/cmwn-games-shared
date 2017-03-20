@@ -1,6 +1,6 @@
 class CustomCursorScreen extends skoash.Screen {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
             cursorLeft: 0,
