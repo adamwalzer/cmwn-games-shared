@@ -6,8 +6,8 @@ console.warn('As of skoash 1.1.0 this component can be found at skoash.Reveal');
 import classNames from 'classnames';
 
 class Reveal extends skoash.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
             openReveal: '',
