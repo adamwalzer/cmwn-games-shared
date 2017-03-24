@@ -56,12 +56,9 @@ class Slider extends skoash.Component {
 
             if (this.refs[ref]) {
                 let save = {};
-                let position;
-                save.className = this.refs[ref].DOMNode.className.includes(VISIBLE) ?
+                save.visbility = this.refs[ref].DOMNode.className.includes(VISIBLE) ?
                     VISIBLE : HIDDEN;
-                position = this.refs[ref].props.key - this.state.firstSlide;
-                position = Math.max(-1, Math.min(this.props.display, position))
-                save.className += ` position-${position}`;
+                save.firstSlide = this.state.firstSlide;
                 freezeItems[ref] = {};
                 freezeItems[ref] = save;
             }
@@ -97,7 +94,10 @@ class Slider extends skoash.Component {
             className += ` position-${position}`
 
             if (_.includes(_.keys(this.state.freezeItems), ref)) {
-                className = this.state.freezeItems[ref].className;
+                freezeItem = this.state.freezeItems[ref];
+                position = key - freezeItem.firstSlide;
+                position = Math.max(-1, Math.min(this.props.display, position))
+                className = `${freezeItem.visibility} position-${position}`;
             }
 
             className = classNames(className, component.props.className);
