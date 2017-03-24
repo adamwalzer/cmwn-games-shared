@@ -1,14 +1,11 @@
 import classNames from 'classnames';
 
-import Component from 'components/component';
-
 const AREA = 'area';
 const CONTENT = 'content';
-const HORIZONTAL = 'horizontal';
 const VISIBLE = 'VISIBLE';
 const HIDDEN = 'HIDDEN';
 
-class Slider extends Component {
+class Slider extends skoash.Component {
     constructor(props) {
         super(props);
 
@@ -19,7 +16,6 @@ class Slider extends Component {
 
         this.prev = this.prev.bind(this);
         this.next = this.next.bind(this);
-        this.getContentStyle = this.getContentStyle.bind(this);
     }
 
     prev() {
@@ -28,16 +24,6 @@ class Slider extends Component {
 
     next() {
         this.changeSlide(this.props.increment);
-    }
-
-    componentDidUpdate() {
-        if (this.props.orientation === HORIZONTAL) {
-            this.adjust = document.getElementsByClassName('slider')[0]
-                .getElementsByClassName(CONTENT)[0].clientWidth;
-        } else {
-            this.adjust = document.getElementsByClassName('slider')[0]
-                .getElementsByClassName(CONTENT)[0].clientHeight;
-        }
     }
 
     changeSlide(increment) {
@@ -56,18 +42,6 @@ class Slider extends Component {
         });
     }
 
-    getContentStyle() {
-        if (this.props.orientation === HORIZONTAL) {
-            return {
-                marginLeft: this.state.firstSlide * this.adjust * -1 + 'px'
-            };
-        } else {
-            return {
-                marginTop: this.state.firstSlide * this.adjust * -1 + 'px'
-            };
-        }
-    }
-
     getClassNames() {
         return classNames('slider', super.getClassNames());
     }
@@ -82,9 +56,12 @@ class Slider extends Component {
 
             if (this.refs[ref]) {
                 let save = {};
+                let position;
                 save.className = this.refs[ref].DOMNode.className.includes(VISIBLE) ?
                     VISIBLE : HIDDEN;
-                save.firstSlide = this.state.firstSlide;
+                position = this.refs[ref].props.key - this.state.firstSlide;
+                position = Math.max(-1, Math.min(this.props.display, position))
+                save.className += ` position-${position}`;
                 freezeItems[ref] = {};
                 freezeItems[ref] = save;
             }
@@ -109,27 +86,18 @@ class Slider extends Component {
             var ref;
             var className;
             var position;
-            var style = {};
             var freezeItem;
-            var freezeItemStyle;
-            var margin;
 
             if (!component) return;
             ref = component.ref || (component.props && component.props['data-ref']) || listName + '-' + key;
-            position = this.props.orientation === HORIZONTAL ? 'left' : 'top';
-            style[position] = (key * 100) + '%';
             className = (key >= this.state.firstSlide &&
                 key < this.state.firstSlide + this.props.display) ? VISIBLE : HIDDEN;
+            position = key - this.state.firstSlide;
+            position = Math.max(-1, Math.min(this.props.display, position))
+            className += ` position-${position}`
 
             if (_.includes(_.keys(this.state.freezeItems), ref)) {
-                freezeItem = _.clone(this.state.freezeItems[ref]);
-                freezeItemStyle = {};
-                margin = `margin${_.upperFirst(position)}`;
-                freezeItemStyle[margin] = (
-					(this.state.firstSlide - freezeItem.firstSlide) * this.adjust
-				) + 'px';
-                style = _.defaults(freezeItemStyle, style);
-                className = freezeItem.className;
+                className = this.state.freezeItems[ref].className;
             }
 
             className = classNames(className, component.props.className);
@@ -140,7 +108,6 @@ class Slider extends Component {
                     {...component.props}
                     ref={ref}
                     key={key}
-                    style={style}
                     className={className}
                 />
             );
@@ -154,10 +121,7 @@ class Slider extends Component {
             <this.props.type {...this.props} className={this.getClassNames()}>
                 <button className="prev-slide" onClick={this.prev} />
                 <div className={AREA}>
-                    <div
-                        className={CONTENT}
-                        style={this.getContentStyle()}
-                    >
+                    <div className={CONTENT}>
                         {this.renderContentList()}
                     </div>
                 </div>
@@ -170,8 +134,7 @@ class Slider extends Component {
 Slider.defaultProps = _.defaults({
     loop: true,
     display: 1,
-    orientation: HORIZONTAL,
     increment: 1,
-}, Component.defaultProps);
+}, skoash.Component.defaultProps);
 
 export default Slider;

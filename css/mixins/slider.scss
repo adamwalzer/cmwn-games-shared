@@ -1,6 +1,6 @@
 @mixin slider {
     .content > * {
-        transition: opacity 1s;
+        transition: opacity 1s, top 1s;
 
         &.VISIBLE {
             opacity: 1;
