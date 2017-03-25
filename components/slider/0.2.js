@@ -40,6 +40,18 @@ class Slider extends skoash.Component {
         this.setState({
             firstSlide
         });
+
+        this.props.onSlide.call(this, firstSlide, increment);
+
+        if (this.props.dataTarget) {
+            this.updateScreenData({
+                key: this.props.dataTarget,
+                data: {
+                    firstSlide,
+                    increment,
+                }
+            });
+        }
     }
 
     getClassNames() {
@@ -75,6 +87,16 @@ class Slider extends skoash.Component {
                 freezeItems,
             });
         }
+
+        if (props.adjustSlide !== null && props.adjustSlide !== this.props.adjustSlide
+            && props.adjustSlide !== this.state.firstSlide) {
+            let diff = props.adjustSlide - this.state.firstSlide;
+            let slide = diff > 0 ? this.next : this.prev;
+            let steps = Math.abs(diff);
+            for (let i = 0; i < steps; i++) {
+                slide();
+            }
+        }
     }
 
     renderContentList(listName = 'children') {
@@ -87,17 +109,18 @@ class Slider extends skoash.Component {
 
             if (!component) return;
             ref = component.ref || (component.props && component.props['data-ref']) || listName + '-' + key;
-            className = (key >= this.state.firstSlide &&
-                key < this.state.firstSlide + this.props.display) ? VISIBLE : HIDDEN;
-            position = key - this.state.firstSlide;
-            position = Math.max(-1, Math.min(this.props.display, position))
-            className += ` position-${position}`
 
             if (_.includes(_.keys(this.state.freezeItems), ref)) {
                 freezeItem = this.state.freezeItems[ref];
                 position = key - freezeItem.firstSlide;
                 position = Math.max(-1, Math.min(this.props.display, position))
                 className = `${freezeItem.visibility} position-${position}`;
+            } else {
+                className = (key >= this.state.firstSlide &&
+                    key < this.state.firstSlide + this.props.display) ? VISIBLE : HIDDEN;
+                position = key - this.state.firstSlide;
+                position = Math.max(-1, Math.min(this.props.display, position))
+                className += ` position-${position}`
             }
 
             className = classNames(className, component.props.className);
@@ -135,6 +158,8 @@ Slider.defaultProps = _.defaults({
     loop: true,
     display: 1,
     increment: 1,
+    onSlide: _.noop,
+    dataTarget: 'slider',
 }, skoash.Component.defaultProps);
 
 export default Slider;

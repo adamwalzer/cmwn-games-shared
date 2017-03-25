@@ -3,14 +3,16 @@
         position: absolute;
         transition: opacity 1s, top 1s;
 
-        @for $i from -1 through $display-length {
-            &.position-#{$i} {
-                @if $direction == 'horizontal' {
-                    top: 0;
-                    left: $i * 100%;
-                } @else {
-                    top: $i * 100%;
-                    left: 0;
+        @if $display-length > 0 {
+            @for $i from -1 through $display-length {
+                &.position-#{$i} {
+                    @if $direction == 'horizontal' {
+                        top: 0;
+                        left: $i * 100%;
+                    } @else {
+                        top: $i * 100%;
+                        left: 0;
+                    }
                 }
             }
         }
