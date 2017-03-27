@@ -18,6 +18,20 @@ class Slider extends skoash.Component {
         this.next = this.next.bind(this);
     }
 
+    start() {
+        let freezeItems = this.state.freezeItems;
+
+        super.start();
+
+        if (this.props.unfreezeOnStart) {
+            freezeItems = [];
+        }
+
+        this.setState({
+            freezeItems,
+        });
+    }
+
     prev() {
         this.changeSlide(-1 * this.props.increment);
     }
@@ -63,7 +77,7 @@ class Slider extends skoash.Component {
 
 
         if (props.freezeItem !== null && props.freezeItem !== this.props.freezeItem) {
-            let freezeItems = _.clone(this.state.freezeItems);
+            let freezeItems = this.state.freezeItems;
             let ref = props.freezeItem;
 
             if (this.refs[ref]) {
@@ -160,6 +174,7 @@ Slider.defaultProps = _.defaults({
     increment: 1,
     onSlide: _.noop,
     dataTarget: 'slider',
+    unfreezeOnStart: true,
 }, skoash.Component.defaultProps);
 
 export default Slider;
