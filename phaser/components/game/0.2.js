@@ -1,36 +1,27 @@
 class Game {
     constructor(opts = {}) {
-        var update;
-
-        opts.preload = (opts.preload || _.noop).bind(this);
-        opts.create = (opts.create || _.noop).bind(this);
-        opts.update = (opts.update || _.noop).bind(this);
-
-        update = (function () {
-            if (!this.shouldUpdate) {
-                setTimeout(() => {
-                    this.shouldUpdate = true;
-                    this.emitEvent({ ready: true });
-                }, 100);
-                return;
-            }
-
-            opts.update();
-        }).bind(this);
-
         opts = _.defaults(opts, {
             width: 960,
             height: 540,
             renderer: Phaser.AUTO,
             parent: '',
             helpers: {},
-            state: { preload: opts.preload, create: opts.create, update },
+            defaultState: 'default',
         });
 
         this.helpers = opts.helpers;
-        this.opts = opts.opts;
+        this.opts = opts.opts || {};
 
-        this.game = new Phaser.Game(opts.width, opts.height, opts.renderer, opts.parent, opts.state);
+        this.game = new Phaser.Game(opts.width, opts.height, opts.renderer, opts.parent);
+
+        _.each(opts.states, (state, stateName) => {
+            _.each(state, (func, funcName) => {
+                state[funcName] = (func || _.noop).bind(this);
+            });
+            this.game.state.add(stateName, state);
+        });
+
+        this.game.state.start(opts.defaultState);
 
         this.attachEvents();
     }
@@ -43,6 +34,9 @@ class Game {
                     break;
                 case 'data-update':
                     this.data = _.defaults(e.data.data, this.data);
+                    break;
+                case 'state-update':
+                    this.game.state.start(e.data.data || 'default');
                     break;
                 case 'pause':
                     this.game.paused = true;

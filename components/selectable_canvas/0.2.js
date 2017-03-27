@@ -1,8 +1,6 @@
 import classNames from 'classnames';
 
-import Selectable from 'shared/components/selectable/0.1';
-
-class SelectableCanvas extends Selectable {
+class SelectableCanvas extends skoash.Selectable {
     constructor() {
         super();
 

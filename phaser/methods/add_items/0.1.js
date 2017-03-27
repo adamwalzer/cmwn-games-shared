@@ -1,5 +1,6 @@
 export default function (groupOpts = {}, optsArray = []) {
     groupOpts.defaultOpts = _.defaults(groupOpts.defaultOpts, {
+        alpha: 1,
         scale: [1, 1],
         left: 0,
         top: 0,
@@ -23,7 +24,7 @@ export default function (groupOpts = {}, optsArray = []) {
         group: 'platforms'
     });
 
-    if (!this[groupOpts.group]) {
+    if (!this[groupOpts.group] || this[groupOpts.group].game !== this.game) {
         // create the group we will be adding the items to
         this[groupOpts.group] = this.game.add.group();
         // enable physics for any object that is created in this group
@@ -31,18 +32,17 @@ export default function (groupOpts = {}, optsArray = []) {
     }
 
     _.each(optsArray, options => {
-        var opts = _.defaults({}, options, groupOpts.defaultOpts);
+        let opts = _.defaults({}, options, groupOpts.defaultOpts);
+        let item;
 
-        let item = this[groupOpts.group].create(opts.left, opts.top, opts.image);
+        this[groupOpts.group].game = this.game;
+        item = this[groupOpts.group].create(opts.left, opts.top, opts.image);
 
         item.originalImage = opts.image;
+        item.alpha = opts.alpha;
         item.scale.setTo(...opts.scale);
         if (opts.crop) {
             item.crop(new Phaser.Rectangle(...opts.crop));
-            if (groupOpts.enableBody) {
-                item.body.width = opts.crop[2];
-                item.body.height = opts.crop[3];
-            }
         }
         item.angle = opts.angle;
         item.anchor.setTo(...opts.anchor);
@@ -60,17 +60,9 @@ export default function (groupOpts = {}, optsArray = []) {
             item.body.checkCollision.right = opts.checkCollisionRight;
             item.body.checkCollision.left = opts.checkCollisionLeft;
 
-            if (!opts.body) {
-                opts.body = [item.body.width, item.body.height, 0, 0];
+            if (opts.body) {
+                item.body.setSize(...opts.body);
             }
-            // defer here to prevent item.scale from overriding body size
-            // we might want to find a better way to do this
-            setTimeout(() => {
-                item.body.width = Math.abs(opts.body[0] * opts.scale[0]);
-                item.body.height = Math.abs(opts.body[1] * opts.scale[1]);
-                item.body.offset.x = opts.body[2] * opts.scale[0];
-                item.body.offset.y = opts.body[3] * opts.scale[1];
-            }, 0);
         }
     });
 }

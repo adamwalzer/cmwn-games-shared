@@ -8,11 +8,9 @@ class Dropzone extends skoash.Component {
 
         super.start();
 
-        setTimeout(() => {
-            self.dropzoneCorners = _.map(self.props.dropzones, (value, key) =>
-                self.getCorners(ReactDOM.findDOMNode(self.refs[`dropzone-${key}`]))
-            );
-        }, 500);
+        self.dropzoneCorners = _.map(self.props.dropzones, (value, key) =>
+            self.getCorners(ReactDOM.findDOMNode(self.refs[`dropzone-${key}`]))
+    );
 
         if (self.loadData && typeof self.loadData === 'object') {
             _.forIn(self.loadData, (ref1, key1) => {
@@ -105,7 +103,9 @@ class Dropzone extends skoash.Component {
 
         dropzoneRef = _.reduce(this.props.dropzones, (a, v, k) => {
             if (skoash.util.doIntersect(corners, this.dropzoneCorners[k])) {
-                return this.refs[`dropzone-${k}`];
+                if (this.refs[`dropzone-${k}`].props.className.indexOf('CORRECT') === -1) {
+                    return this.refs[`dropzone-${k}`];
+                }
             }
             return a;
         }, false);
@@ -115,8 +115,6 @@ class Dropzone extends skoash.Component {
         } else {
             this.outOfBounds(dropped);
         }
-
-        this.props.onDrop.call(this, dropped);
     }
 
     onDrag(dragging) {
@@ -131,7 +129,6 @@ class Dropzone extends skoash.Component {
             dropzoneRef.contains = contains;
         });
 
-        this.playMedia('drag');
         this.props.onDrag.call(this, dragging);
     }
 
@@ -144,13 +141,13 @@ class Dropzone extends skoash.Component {
     }
 
     outOfBounds(dropped) {
-        // respond to an out of bounds drop
+    // respond to an out of bounds drop
         this.playMedia('out');
-        if (this.props.incorrectOnOutOfBounds) this.incorrect(dropped);
+        this.incorrect(dropped);
     }
 
     correct(dropped, dropzoneRef) {
-        // respond to correct drop
+    // respond to correct drop
         dropped.markCorrect();
         this.playMedia('correct');
 
@@ -160,7 +157,7 @@ class Dropzone extends skoash.Component {
     }
 
     incorrect(dropped, dropzoneRef) {
-        // respond to incorrect drop
+    // respond to incorrect drop
         dropped.markIncorrect();
         this.playMedia('incorrect');
         this.props.onIncorrect.call(this, dropped, dropzoneRef);
@@ -183,13 +180,23 @@ class Dropzone extends skoash.Component {
             <component.type
                 {...component.props}
                 ref={`dropzone-${key}`}
+                data-ref={component.ref}
                 key={key}
+                className={this.getDropzoneClassNames(component)}
             />
         );
     }
 
     getClassNames() {
         return classNames('dropzones', super.getClassNames());
+    }
+
+    getDropzoneClassNames(dropzone) {
+        return classNames(
+            'dropzone',
+            dropzone.props.className,
+            super.getClassNames()
+        );
     }
 
     render() {
@@ -207,8 +214,6 @@ Dropzone.defaultProps = _.defaults({
     onCorrect: _.noop,
     onIncorrect: _.noop,
     onDrag: _.noop,
-    onDrop: _.noop,
-    incorrectOnOutOfBounds: true,
 }, skoash.Component.defaultProps);
 
 export default Dropzone;

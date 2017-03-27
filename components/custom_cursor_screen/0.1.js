@@ -23,6 +23,8 @@ class CustomCursorScreen extends skoash.Screen {
         window.addEventListener('touchstart', this.touchstart);
 
         window.addEventListener('resize', this.resize);
+
+        this.resize();
     }
 
     resize() {

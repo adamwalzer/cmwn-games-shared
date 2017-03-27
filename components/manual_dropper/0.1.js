@@ -5,6 +5,10 @@ import Catchable from 'shared/components/catchable/0.2';
 const ITEM = 'items-';
 const DROPPED = 'DROPPED';
 
+let onReady = function () {
+    this.start();
+};
+
 class Dropper extends skoash.Component {
     constructor(props) {
         super(props);
@@ -12,11 +16,19 @@ class Dropper extends skoash.Component {
         this.state = _.defaults({
             items: {},
         }, this.state);
+
+        this.startHelper = this.startHelper.bind(this);
+        this.nextHelper = this.nextHelper.bind(this);
+        this.afterNext = this.afterNext.bind(this);
     }
 
     bootstrap() {
         super.bootstrap();
         this.DOMNode = ReactDOM.findDOMNode(this);
+    }
+
+    startHelper() {
+        this.next(this.props.amount, false);
     }
 
     start() {
@@ -27,9 +39,7 @@ class Dropper extends skoash.Component {
 
         this.setState({
             items: {},
-        }, () => {
-            this.next(this.props.amount, false);
-        });
+        }, this.startHelper);
     }
 
     getFirstItem() {
@@ -63,38 +73,43 @@ class Dropper extends skoash.Component {
         props.onPickUp.call(this, itemRef);
     }
 
-    next(amount = 1, shift = true) {
-        var items = this.state.items;
+    nextHelper(a, v) {
+        a[this.itemCount++] = (
+            <v.type
+                {...v.props}
+                onReady={onReady}
+            />
+        );
+        return a;
+    }
 
-        _.each(this.refs.bin.get(amount), v => {
-            items[this.itemCount++] = (
-                <v.type
-                    {...v.props}
-                    onReady={function () {
-                        this.start();
-                    }}
-                />
-            );
-        });
+    next(amount = 1, shift = true) {
+        var items = _.reduce(this.refs.bin.get(amount), this.nextHelper, this.state.items);
 
         if (shift) delete items[this.firstItemIndex++];
 
         this.setState({
             items
-        }, () => {
-            let refs = _.filter(this.refs, (v, k) => !k.indexOf(ITEM));
-            this.invokeChildrenFunction('markCatchable');
+        }, this.afterNext);
+    }
 
-            this.updateScreenData({
-                key: this.props.refsTarget,
-                data: {
-                    refs,
-                    next: false,
-                }
-            });
+    afterNextHelper(v, k) {
+        return !k.indexOf(ITEM);
+    }
 
-            this.props.onNext.call(this);
+    afterNext() {
+        let refs = _.filter(this.refs, this.afterNextHelper);
+        this.invokeChildrenFunction('markCatchable');
+
+        this.updateScreenData({
+            key: this.props.refsTarget,
+            data: {
+                refs,
+                next: false,
+            }
         });
+
+        this.props.onNext.call(this);
     }
 
     caught(catchableRefKey) {
@@ -125,24 +140,26 @@ class Dropper extends skoash.Component {
         return classNames('manual-dropper', super.getClassNames());
     }
 
+    renderItemsHelper(item, key) {
+        var ref = ITEM + key;
+        if (!item) return null;
+        return (
+            <item.type
+                {...item.props}
+                data-ref={ref}
+                data-message={item.props.message}
+                ref={ref}
+                key={key}
+            />
+        );
+    }
+
     /*
      * shortid is intentionally not used for key here because we want to make sure
      * that the element is transitioned and not replaced.
      */
     renderItems() {
-        return _.map(this.state.items, (item, key) => {
-            var ref = ITEM + key;
-            if (!item) return null;
-            return (
-                <item.type
-                    {...item.props}
-                    data-ref={ref}
-                    data-message={item.props.message}
-                    ref={ref}
-                    key={key}
-                />
-            );
-        });
+        return _.map(this.state.items, this.renderItemsHelper);
     }
 
     renderBin() {
