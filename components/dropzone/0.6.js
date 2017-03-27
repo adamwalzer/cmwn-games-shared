@@ -8,6 +8,15 @@ class Dropzone extends skoash.Component {
 
         super.start();
 
+        if (this.props.clearOnStart) {
+            _.each(this.props.dropzones, (value, key) => {
+                var dropzoneRef;
+                var contains;
+                dropzoneRef = this.refs[`dropzone-${key}`];
+                dropzoneRef.contains = [];
+            });
+        }
+
         self.dropzoneCorners = _.map(self.props.dropzones, (value, key) =>
             self.getCorners(ReactDOM.findDOMNode(self.refs[`dropzone-${key}`]))
         );
@@ -116,6 +125,7 @@ class Dropzone extends skoash.Component {
     }
 
     onDrag(dragging) {
+        this.playMedia('drag');
         this.removeEl(dragging);
         this.props.onDrag.call(this, dragging);
     }
@@ -133,7 +143,10 @@ class Dropzone extends skoash.Component {
             dropzoneRef = this.refs[`dropzone-${key}`];
             contains = dropzoneRef.contains || [];
             index = contains.indexOf(el);
-            if (~index) contains.splice(index, 1);
+            if (~index) {
+                contains.splice(index, 1);
+                this.props.onRemove.call(this, el, dropzoneRef);
+            }
             dropzoneRef.contains = contains;
         });
     }
@@ -225,6 +238,7 @@ Dropzone.defaultProps = _.defaults({
     onDrag: _.noop,
     onReturn: _.noop,
     acceptNum: Infinity,
+    clearOnStart: false,
 }, skoash.Component.defaultProps);
 
 export default Dropzone;
