@@ -22,6 +22,10 @@ class Dropper extends skoash.Component {
         this.next = this.next.bind(this);
         this.moveEvent = this.moveEvent.bind(this);
         this.setZoom = this.setZoom.bind(this);
+        this.setZoomHelper = this.setZoomHelper.bind(this);
+        this.nextHelper = this.nextHelper.bind(this);
+        this.renderItemsHelper = this.renderItemsHelper.bind(this);
+        this.afterItemTransition = this.afterItemTransition.bind(this);
     }
 
     bootstrap() {
@@ -35,20 +39,67 @@ class Dropper extends skoash.Component {
         window.addEventListener('resize', this.setZoom);
     }
 
-    setZoom() {
-        skoash.trigger('getState').then(state => {
-            this.setState({
-                zoom: state.scale,
-            });
+    setZoomHelper(state) {
+        this.setState({
+            zoom: state.scale,
         });
     }
 
+    setZoom() {
+        skoash.trigger('getState').then(this.setZoomHelper);
+    }
+
+    nextHelper() {
+        let index = this.state.itemCount - 1;
+        let timeoutFunction = i => {
+            let itemRef = this.refs['items-' + index];
+            if (itemRef) {
+                itemRef.addClassName(this.props.prepClasses[i]);
+                this.props.onAddClassName.call(this, this.props.prepClasses[i]);
+                if (i === this.props.prepClasses.length - 1) {
+                    ReactDOM.findDOMNode(itemRef).addEventListener('transitionend', this.afterItemTransition);
+                }
+            }
+
+            if (i === this.props.prepClasses.length) this.next();
+        };
+
+        for (let i = 0; i <= this.props.prepClasses.length; i++) {
+            setTimeout(_.partial(timeoutFunction, i), i * this.props.prepTimeout);
+        }
+
+        this.updateGameState({
+            path: this.props.refsTarget,
+            data: {
+                refs: _.filter(this.refs, this.refsFilter),
+            }
+        });
+    }
+
+    afterItemTransition() {
+        let index = this.state.itemCount - 2;
+        let itemEndXs = this.state.itemEndXs;
+        let items = this.state.items;
+
+        itemEndXs[index] = this.state.endX;
+        delete items[index];
+
+        this.setState({
+            items,
+            itemEndXs
+        });
+    }
+
+    refsFilter(v, k) {
+        return !k.indexOf('items-');
+    }
+
     next(on) {
-        var items;
-        var index;
+        let index;
+        let items;
 
         if (!this.state.started || (!this.props.on && !on)) return;
-
+        console.log('next');
         index = this.state.itemCount;
         items = this.state.items;
         items[index] = this.refs.bin.get(1)[0];
@@ -56,48 +107,11 @@ class Dropper extends skoash.Component {
         this.setState({
             items,
             itemCount: index + 1,
-        }, () => {
-            var timeoutFunction = i => {
-                var itemRef;
-                var itemEndXs;
-                itemRef = this.refs['items-' + index];
-                if (itemRef) {
-                    itemRef.addClassName(this.props.prepClasses[i]);
-                    this.props.onAddClassName.call(this, this.props.prepClasses[i]);
-                    if (i === this.props.prepClasses.length - 1) {
-                        itemEndXs = this.state.itemEndXs;
-                        itemEndXs[index] = this.state.endX;
-                        ReactDOM.findDOMNode(itemRef).addEventListener('transitionend', () => {
-                            items = this.state.items;
-                            delete items[index];
-                            this.setState({
-                                items,
-                                itemEndXs
-                            });
-                        });
-                    }
-                }
-
-                if (i === this.props.prepClasses.length) this.next();
-            };
-
-            for (let i = 0; i <= this.props.prepClasses.length; i++) {
-                setTimeout(() => {
-                    timeoutFunction(i);
-                }, i * this.props.prepTimeout);
-            }
-
-            this.updateGameState({
-                path: this.props.refsTarget,
-                data: {
-                    refs: _.filter(this.refs, (v, k) => !k.indexOf('items-')),
-                }
-            });
-        });
+        }, this.nextHelper);
     }
 
     moveEvent(e) {
-        var endX = e.targetTouches && e.targetTouches[0] ? e.targetTouches[0].pageX : e.pageX;
+        let endX = e.targetTouches && e.targetTouches[0] ? e.targetTouches[0].pageX : e.pageX;
 
         this.setState({
             endX,
@@ -114,8 +128,8 @@ class Dropper extends skoash.Component {
     }
 
     getItemStyle(key) {
-        var endX;
-        var x;
+        let endX;
+        let x;
 
         endX = this.state.itemEndXs[key] || this.state.endX;
         x = ((endX - this.state.startX) / this.state.zoom);
@@ -127,7 +141,7 @@ class Dropper extends skoash.Component {
     }
 
     getStyle() {
-        var x = ((this.state.endX - this.state.startX) / this.state.zoom);
+        let x = ((this.state.endX - this.state.startX) / this.state.zoom);
 
         return {
             transform: `translateX(${x}px)`,
@@ -139,25 +153,27 @@ class Dropper extends skoash.Component {
         return classNames('dropper', this.state.direction, super.getClassNames());
     }
 
+    renderItemsHelper(item, key) {
+        let ref = 'items-' + key;
+        if (!item) return null;
+        return (
+            <item.type
+                {...item.props}
+                style={this.getItemStyle(key)}
+                data-ref={ref}
+                data-message={item.props.message}
+                ref={ref}
+                key={key}
+            />
+        );
+    }
+
     /*
      * shortid is intentionally not used for key here because we want to make sure
      * that the element is transitioned and not replaced.
      */
     renderItems() {
-        return _.map(this.state.items, (item, key) => {
-            var ref = 'items-' + key;
-            if (!item) return null;
-            return (
-                <item.type
-                    {...item.props}
-                    style={this.getItemStyle(key)}
-                    data-ref={ref}
-                    data-message={item.props.message}
-                    ref={ref}
-                    key={key}
-                />
-            );
-        });
+        return _.map(this.state.items, this.renderItemsHelper);
     }
 
     renderBin() {
