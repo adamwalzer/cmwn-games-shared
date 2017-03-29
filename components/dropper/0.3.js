@@ -19,6 +19,8 @@ class Dropper extends skoash.Component {
             zoom: 1,
         }, this.state);
 
+        this.timeouts = [];
+
         this.next = this.next.bind(this);
         this.moveEvent = this.moveEvent.bind(this);
         this.setZoom = this.setZoom.bind(this);
@@ -50,22 +52,27 @@ class Dropper extends skoash.Component {
     }
 
     nextHelper() {
-        let index = this.state.itemCount - 1;
         let timeoutFunction = i => {
+            let index = this.state.itemCount - 1;
             let itemRef = this.refs['items-' + index];
             if (itemRef) {
                 itemRef.addClassName(this.props.prepClasses[i]);
                 this.props.onAddClassName.call(this, this.props.prepClasses[i]);
                 if (i === this.props.prepClasses.length - 1) {
+                    let itemEndXs = this.state.itemEndXs;
+                    itemEndXs[index] = this.state.endX;
                     ReactDOM.findDOMNode(itemRef).addEventListener('transitionend', this.afterItemTransition);
+                    this.setState({
+                        itemEndXs,
+                    });
                 }
             }
 
-            if (i === this.props.prepClasses.length) this.next();
+            if (i === this.props.prepClasses.length - 1) setTimeout(this.next, 2 * this.props.prepTimeout);
         };
 
-        for (let i = 0; i <= this.props.prepClasses.length; i++) {
-            setTimeout(_.partial(timeoutFunction, i), i * this.props.prepTimeout);
+        for (let i = 0; i < this.props.prepClasses.length; i++) {
+            this.timeouts.push(setTimeout(_.partial(timeoutFunction, i), i * this.props.prepTimeout));
         }
 
         this.updateGameState({
@@ -77,21 +84,18 @@ class Dropper extends skoash.Component {
     }
 
     afterItemTransition() {
-        let index = this.state.itemCount - 2;
-        let itemEndXs = this.state.itemEndXs;
+        let index = this.state.itemCount - 1;
         let items = this.state.items;
 
-        itemEndXs[index] = this.state.endX;
         delete items[index];
 
         this.setState({
             items,
-            itemEndXs
         });
     }
 
     refsFilter(v, k) {
-        return !k.indexOf('items-');
+        return _.includes(k, 'items-');
     }
 
     next(on) {
@@ -99,7 +103,6 @@ class Dropper extends skoash.Component {
         let items;
 
         if (!this.state.started || (!this.props.on && !on)) return;
-        console.log('next');
         index = this.state.itemCount;
         items = this.state.items;
         items[index] = this.refs.bin.get(1)[0];
@@ -108,6 +111,22 @@ class Dropper extends skoash.Component {
             items,
             itemCount: index + 1,
         }, this.nextHelper);
+    }
+
+    pause() {
+        super.pause();
+
+        this.timeouts = _.map(this.timeouts, this.clearTimeout);
+
+        this.setState({
+            items: {},
+            itemCount: this.state.itemCount + 1,
+        });
+    }
+
+    clearTimeout(timeout) {
+        clearTimeout(timeout);
+        return;
     }
 
     moveEvent(e) {
@@ -153,6 +172,10 @@ class Dropper extends skoash.Component {
         return classNames('dropper', this.state.direction, super.getClassNames());
     }
 
+    /*
+     * shortid is intentionally not used for key here because we want to make sure
+     * that the element is transitioned and not replaced.
+     */
     renderItemsHelper(item, key) {
         let ref = 'items-' + key;
         if (!item) return null;
@@ -168,10 +191,6 @@ class Dropper extends skoash.Component {
         );
     }
 
-    /*
-     * shortid is intentionally not used for key here because we want to make sure
-     * that the element is transitioned and not replaced.
-     */
     renderItems() {
         return _.map(this.state.items, this.renderItemsHelper);
     }
