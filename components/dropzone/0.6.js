@@ -11,7 +11,6 @@ class Dropzone extends skoash.Component {
         if (this.props.clearOnStart) {
             _.each(this.props.dropzones, (value, key) => {
                 var dropzoneRef;
-                var contains;
                 dropzoneRef = this.refs[`dropzone-${key}`];
                 dropzoneRef.contains = [];
             });

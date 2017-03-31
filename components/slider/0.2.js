@@ -102,8 +102,8 @@ class Slider extends skoash.Component {
             });
         }
 
-        if (props.adjustSlide !== null && props.adjustSlide !== this.props.adjustSlide
-            && props.adjustSlide !== this.state.firstSlide) {
+        if (props.adjustSlide !== null && props.adjustSlide !== this.props.adjustSlide &&
+            props.adjustSlide !== this.state.firstSlide) {
             let diff = props.adjustSlide - this.state.firstSlide;
             let slide = diff > 0 ? this.next : this.prev;
             let steps = Math.abs(diff);
@@ -127,14 +127,14 @@ class Slider extends skoash.Component {
             if (_.includes(_.keys(this.state.freezeItems), ref)) {
                 freezeItem = this.state.freezeItems[ref];
                 position = key - freezeItem.firstSlide;
-                position = Math.max(-1, Math.min(this.props.display, position))
+                position = Math.max(-1, Math.min(this.props.display, position));
                 className = `${freezeItem.visibility} position-${position}`;
             } else {
                 className = (key >= this.state.firstSlide &&
                     key < this.state.firstSlide + this.props.display) ? VISIBLE : HIDDEN;
                 position = key - this.state.firstSlide;
-                position = Math.max(-1, Math.min(this.props.display, position))
-                className += ` position-${position}`
+                position = Math.max(-1, Math.min(this.props.display, position));
+                className += ` position-${position}`;
             }
 
             className = classNames(className, component.props.className);

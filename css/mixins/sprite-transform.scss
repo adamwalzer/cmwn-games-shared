@@ -1,14 +1,14 @@
-@mixin sprite-transform($scale: 1.0, $align-y: top, $align-x: left) {
+@mixin sprite-transform($scale: 1, $align-y: top, $align-x: left) {
 
     position: absolute;
-    $translateX: -50%;
-    $translateY: -50%;
+    $translate-x: -50%;
+    $translate-y: -50%;
 
     @if ($align-y == top) {
         top: 50%;
     } @else {
         bottom: 50%;
-        $translateY: 50%;
+        $translate-y: 50%;
     }
 
 
@@ -16,9 +16,9 @@
         left: 50%;
     } @else {
         right: 50%;
-        $translateX: 50%;
+        $translate-x: 50%;
     }
 
-    transform: scale($scale) translateX($translateX) translateY($translateY);
+    transform: scale($scale) translateX($translate-x) translateY($translate-y);
     transform-origin: $align-y $align-x;
 }
