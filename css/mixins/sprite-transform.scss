@@ -1,0 +1,24 @@
+@mixin sprite-transform($scale: 1, $align-y: top, $align-x: left) {
+
+    position: absolute;
+    $translate-x: -50%;
+    $translate-y: -50%;
+
+    @if ($align-y == top) {
+        top: 50%;
+    } @else {
+        bottom: 50%;
+        $translate-y: 50%;
+    }
+
+
+    @if ($align-x == left) {
+        left: 50%;
+    } @else {
+        right: 50%;
+        $translate-x: 50%;
+    }
+
+    transform: scale($scale) translateX($translate-x) translateY($translate-y);
+    transform-origin: $align-y $align-x;
+}

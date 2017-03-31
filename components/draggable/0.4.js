@@ -86,11 +86,12 @@ class Draggable extends skoash.Component {
             endY,
         });
 
-        this.updateGameState({
+        this.updateScreenData({
             path: this.props.draggableTarget,
             data: {
                 dragging: this,
-                dropped: null
+                dropped: null,
+                returning: null,
             },
         });
 
@@ -160,6 +161,15 @@ class Draggable extends skoash.Component {
             endX = this.state.startX;
             endY = this.state.startY;
             doReturn = true;
+
+            this.updateScreenData({
+                path: this.props.draggableTarget,
+                data: {
+                    dropping: null,
+                    dragging: null,
+                    returning: this,
+                },
+            });
         }
 
         this.setState({
@@ -189,11 +199,12 @@ class Draggable extends skoash.Component {
     }
 
     onDrop() {
-        this.updateGameState({
+        this.updateScreenData({
             path: this.props.draggableTarget,
             data: {
                 dragging: null,
-                dropped: this
+                dropped: this,
+                returning: null,
             },
         });
 
@@ -242,14 +253,23 @@ class Draggable extends skoash.Component {
         }, 'draggable', this.state.classes, super.getClassNames());
     }
 
+    componentWillReceiveProps(props) {
+        super.componentWillReceiveProps(props);
+
+        if (props.incorrect && props.incorrect !== this.props.incorrect) {
+            this.markIncorrect(props.dropped);
+        }
+    }
+
     render() {
         return (
-            <div
+            <this.props.type
                 className={this.getClassNames()}
                 data-message={this.props.message}
                 style={this.getStyle()}
-                children={this.props.children}
-            />
+            >
+                {this.renderContentList()}
+            </this.props.type>
         );
     }
 }

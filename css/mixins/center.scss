@@ -1,6 +1,16 @@
-@mixin center {
+@mixin center($vertical: 'true', $horizontal: 'true') {
+
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
+
+    @if ($vertical != 'true') {
+        left: 50%;
+        transform: translateX(-50%);
+    } @else if ($horizontal != 'true') {
+        top: 50%;
+        transform: translateY(-50%);
+    } @else {
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+    }
 }

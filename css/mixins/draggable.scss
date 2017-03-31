@@ -1,0 +1,8 @@
+@mixin draggable {
+    cursor: pointer;
+
+    &.CORRECT {
+        cursor: default;
+        pointer-events: none;
+    }
+}

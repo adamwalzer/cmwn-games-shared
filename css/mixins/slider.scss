@@ -1,0 +1,38 @@
+@mixin slider($display-length: 1, $direction: 'horizontal') {
+    .content > * {
+        position: absolute;
+        transition: opacity 1s, top 1s;
+
+        @if $display-length > 0 {
+            @for $i from -1 through $display-length {
+                &.position-#{$i} {
+                    @if $direction == 'horizontal' {
+                        top: 0;
+                        left: $i * 100%;
+                    } @else {
+                        top: $i * 100%;
+                        left: 0;
+                    }
+                }
+            }
+        }
+
+        &.VISIBLE {
+            opacity: 1;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+
+        &.HIDDEN {
+            opacity: 0;
+            cursor: default;
+            pointer-events: none;
+        }
+    }
+
+    .prev-slide,
+    .next-slide {
+        z-index: 1;
+    }
+}
+
