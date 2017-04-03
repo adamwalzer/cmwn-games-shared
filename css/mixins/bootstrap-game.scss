@@ -52,6 +52,9 @@ $default-font: "Source Sans Pro", "Helvetica Neue", Helvetica, sans-serif;
     }
 
     .skoash-game {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 960px;
         height: 540px;
     }
