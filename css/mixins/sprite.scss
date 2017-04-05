@@ -22,7 +22,14 @@
     width: $width;
     height: $height;
 
-    &:hover {
+    .skoash-game:not(.MOBILE) & {
+        &:hover {
+            background-position: -#{$background-left} -#{$hover-background-top};
+        }
+    }
+
+    &:active,
+    &:focus {
         background-position: -#{$background-left} -#{$hover-background-top};
     }
 }
